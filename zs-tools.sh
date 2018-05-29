@@ -19,7 +19,7 @@ set -e
 # 
 #
 ##### 描述 结束  #####
-
+BASH_ENV="${HOME}/.bashrc"
 #定义命令的执行方式
 sh_c='bash -c'
 #定义软件安装的包管理器，根据当前系统自动抓取
@@ -127,7 +127,7 @@ install_java(){
         echo "\033[33m # WARNING: 如果 java 还未生效，请关闭终端重新打开终端或者注销当前用户后重新尝试 \033[0m" 
         exit 0
     fi
-    echo '正在安装Java'
+    echo '受您当前网速的影响，下载过程较慢，请耐心等待！正在安装 Java ⏳ ⏳ ⏳ '
     if [ -d ${HOME}/.zs-tools ]; then
         if [ ! -d ${HOME}/.zs-tools/jdk1.8.0_171 ]; then
             $sh_c "rm -rf ${HOME}/.zs-tools/jdk1.8.0_171"
@@ -142,8 +142,8 @@ install_java(){
             tar zxvf ${HOME}/.zs-tools/jdk-8u171-linux-x64.tar.gz -C ${HOME}/.zs-tools/"
     echo "export JAVA_HOME=${HOME}/.zs-tools/jdk1.8.0_171" >> "${HOME}/.bashrc"
     echo 'export PATH=${JAVA_HOME}/bin:${JAVA_HOME}/jre/bin:${PATH}' >> "${HOME}/.bashrc"
-    $sh_c "\. ${HOME}/.bashrc && \
-        rm -rf ${HOME}/.zs-tools/jdk-8u171-linux-x64.tar.gz"
+    bash -ic "source ${HOME}/.bashrc"
+    $sh_c "rm -rf ${HOME}/.zs-tools/jdk-8u171-linux-x64.tar.gz"
     echo
     echo "  # Success: Java已经安装完成👏 🍺      "
     echo
@@ -168,7 +168,7 @@ install_gradle(){
         check_user
         do_install unzip
     fi
-    echo '正在安装gradle'
+    echo '受您当前网速的影响，下载过程较慢，请耐心等待！正在安装 gradle ⏳ ⏳ ⏳ '
     if [ -d ${HOME}/.zs-tools ]; then
         if [ ! -d ${HOME}/.zs-tools/gradle-4.1 ]; then
             $sh_c "rm -rf ${HOME}/.zs-tools/gradle-4.1"
@@ -182,8 +182,8 @@ install_gradle(){
     $sh_c "wget -P ${HOME}/.zs-tools/ https://code.aliyun.com/shuoer/soft/raw/master/gradle-4.1-bin.zip && \
             unzip ${HOME}/.zs-tools/gradle-4.1-bin.zip -d ${HOME}/.zs-tools/"
     echo 'export PATH=${HOME}/.zs-tools/gradle-4.1/bin:${PATH}' >> "${HOME}/.bashrc"
-    $sh_c "\. ${HOME}/.bashrc && \
-            rm -rf ${HOME}/.zs-tools/gradle-4.1-bin.zip"
+    bash -ic "source ${HOME}/.bashrc"
+    $sh_c "rm -rf ${HOME}/.zs-tools/gradle-4.1-bin.zip"
     echo
     echo "   # Success: gradle已经安装完成👏 🍺       "
     echo
@@ -191,12 +191,16 @@ install_gradle(){
 #安装android环境
 install_android(){
     local check_android=`check android`
+    local check_java=`check java`
     if [ ! -z ${check_android} ]; then
         echo "\033[32m # Success: android 已经安装👏 🍺 \033[0m"
         echo "\033[33m # WARNING: 如果 android 还未生效，请关闭终端重新打开终端或者注销当前用户后重新尝试 \033[0m" 
         exit 0
     fi
-    echo '正在安装 android'
+    if [ -z ${check_java} ]; then
+        install_java
+    fi
+    echo '受您当前网速的影响，下载过程较慢，请耐心等待！正在安装 android ⏳ ⏳ ⏳ '
     if [ -d ${HOME}/.zs-tools ]; then
         if [ ! -d ${HOME}/.zs-tools/android-sdk-linux ]; then
             $sh_c "rm -rf ${HOME}/.zs-tools/android-sdk-linux"
@@ -217,9 +221,9 @@ install_android(){
             tar zxvf ${HOME}/.zs-tools/android-sdk_r24.4.1-linux.tgz -C ${HOME}/.zs-tools/"
     echo "export ANDROID_HOME=${HOME}/.zs-tools/android-sdk-linux" >> "${HOME}/.bashrc"
     echo 'export PATH=${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${PATH}' >> "${HOME}/.bashrc"
-    $sh_c "\. ${HOME}/.bashrc && \
-            rm -rf ${HOME}/.zs-tools/android-sdk_r24.4.1-linux.tgz && \
+    bash -ic "source ${HOME}/.bashrc && \
             echo y | android update sdk -a --no-ui --filter tools,platform-tools,android-26,build-tools-26.0.2"
+    $sh_c "rm -rf ${HOME}/.zs-tools/android-sdk_r24.4.1-linux.tgz"
     echo "  # Success: android 已经安装完成👏 🍺      "
 }
 #安装程序的主入口
@@ -231,8 +235,8 @@ do_install(){
     
     if ! echo "$support_map" | grep "$1" >/dev/null; then
         check_user
-        $sh_c "$( get_distribution ) update "
-        $sh_c "$( get_distribution ) install $1 -y"
+        $sh_c "$( get_pkg_manager ) update "
+        $sh_c "$( get_pkg_manager ) install $1 -y"
         exit 0
     else
         eval "install_$1"
