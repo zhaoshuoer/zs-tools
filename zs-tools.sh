@@ -12,8 +12,8 @@ set -e
 #   该脚本可以安装Java、Cordova、Android、gradle、node、npm、docker
 #   脚本名称 zs-tools:
 #       -v | -version : 打印当前的版本信息
-#       package       : 安装软件（Java、Cordova、Android、gradle、node、npm、docker）
-#       check         : 用于检测当前的环境是否安装可用（Java、Cordova、Android、gradle、node、npm、docker）
+#       -i | install       : 安装软件（Java、Cordova、Android、gradle、node、npm、docker）
+#       -c | chrck         : 用于检测当前的环境是否安装可用（Java、Cordova、Android、gradle、node、npm、docker）
 #       ...           : 暂时只想到了这么多！想要什么功能以后再说
 #   该脚本的安装方式可用于 npm install -g zs-tools
 # 
@@ -148,9 +148,39 @@ install_java(){
 }
 #安装Cordova环境
 install_cordova(){
-    if [ -z $cordova_is_installed ]; then
-        echo '正在安装Cordova'
+    local cheak_cordova=`check cordova`
+    local cheak_npm=`check npm`
+    local check_gradle=`check gradle`
+    if [ ! -z ${cheak_cordova} ]; then
+        echo "\033[32m # Success: cordova 已经安装👏 🍺 \033[0m"
+        echo "\033[33m # WARNING: 如果 cordova 还未生效，请关闭终端重新打开终端或者注销当前用户后重新尝试 \033[0m" 
+        exit 0
     fi
+    if [ -z ${cheak_npm} ]; then
+        install_node
+    fi
+    if [ -z ${check_gradle} ]; then
+        install_gradle
+    fi
+    echo '受您当前网速的影响，下载过程较慢，请耐心等待！正在安装 cordova ⏳ ⏳ ⏳ '
+    $sh_c "npm install -g cordova"
+    echo "\033[32m # Success: cordova 已经安装👏 🍺 \033[0m"
+    echo "\033[33m # WARNING: 如果 cordova 还未生效，请关闭终端重新打开终端或者注销当前用户后重新尝试 \033[0m"
+}
+install_node(){
+    local cheak_node=`check node`
+    if [ ! -z ${cheak_node} ]; then
+        echo "\033[32m # Success: node 已经安装👏 🍺 \033[0m"
+        echo "\033[33m # WARNING: 如果 node 还未生效，请关闭终端重新打开终端或者注销当前用户后重新尝试 \033[0m" 
+        exit 0
+    fi
+    echo '受您当前网速的影响，下载过程较慢，请耐心等待！正在安装 node ⏳ ⏳ ⏳ '
+    $sh_c "wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash"
+    bash -ic "source ${HOME}/.bashrc && \
+            nvm install stable && \
+            npm install -g yarn"
+    echo "\033[32m # Success: node 已经安装👏 🍺 \033[0m"
+    echo "\033[33m # WARNING: 如果 node 还未生效，请关闭终端重新打开终端或者注销当前用户后重新尝试 \033[0m"
 }
 #安装gradle环境
 install_gradle(){
