@@ -151,6 +151,7 @@ install_cordova(){
     local cheak_cordova=`check cordova`
     local cheak_npm=`check npm`
     local check_gradle=`check gradle`
+    local check_android=`check android`
     if [ ! -z ${cheak_cordova} ]; then
         echo "\033[32m # Success: cordova 已经安装👏 🍺 \033[0m"
         echo "\033[33m # WARNING: 如果 cordova 还未生效，请关闭终端重新打开终端或者注销当前用户后重新尝试 \033[0m" 
@@ -161,6 +162,9 @@ install_cordova(){
     fi
     if [ -z ${check_gradle} ]; then
         install_gradle
+    fi
+    if [ -z ${check_android} ]; then
+        install_android
     fi
     echo '受您当前网速的影响，下载过程较慢，请耐心等待！正在安装 cordova ⏳ ⏳ ⏳ '
     $sh_c "npm install -g cordova"
