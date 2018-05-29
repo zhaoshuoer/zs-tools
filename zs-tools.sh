@@ -19,7 +19,6 @@ set -e
 # 
 #
 ##### 描述 结束  #####
-BASH_ENV="${HOME}/.bashrc"
 #定义命令的执行方式
 sh_c='bash -c'
 #定义软件安装的包管理器，根据当前系统自动抓取
@@ -144,9 +143,8 @@ install_java(){
     echo 'export PATH=${JAVA_HOME}/bin:${JAVA_HOME}/jre/bin:${PATH}' >> "${HOME}/.bashrc"
     bash -ic "source ${HOME}/.bashrc"
     $sh_c "rm -rf ${HOME}/.zs-tools/jdk-8u171-linux-x64.tar.gz"
-    echo
-    echo "  # Success: Java已经安装完成👏 🍺      "
-    echo
+    echo "\033[32m # Success: java 已经安装👏 🍺 \033[0m"
+    echo "\033[33m # WARNING: 如果 java 还未生效，请关闭终端重新打开终端或者注销当前用户后重新尝试 \033[0m"
 }
 #安装Cordova环境
 install_cordova(){
@@ -184,9 +182,8 @@ install_gradle(){
     echo 'export PATH=${HOME}/.zs-tools/gradle-4.1/bin:${PATH}' >> "${HOME}/.bashrc"
     bash -ic "source ${HOME}/.bashrc"
     $sh_c "rm -rf ${HOME}/.zs-tools/gradle-4.1-bin.zip"
-    echo
-    echo "   # Success: gradle已经安装完成👏 🍺       "
-    echo
+    echo "\033[32m # Success: gradle 已经安装👏 🍺 \033[0m"
+    echo "\033[33m # WARNING: 如果 gradle 还未生效，请关闭终端重新打开终端或者注销当前用户后重新尝试 \033[0m"
 }
 #安装android环境
 install_android(){
@@ -224,7 +221,8 @@ install_android(){
     bash -ic "source ${HOME}/.bashrc && \
             echo y | android update sdk -a --no-ui --filter tools,platform-tools,android-26,build-tools-26.0.2"
     $sh_c "rm -rf ${HOME}/.zs-tools/android-sdk_r24.4.1-linux.tgz"
-    echo "  # Success: android 已经安装完成👏 🍺      "
+    echo "\033[32m # Success: android 已经安装👏 🍺 \033[0m"
+    echo "\033[33m # WARNING: 如果 android 还未生效，请关闭终端重新打开终端或者注销当前用户后重新尝试 \033[0m"
 }
 #安装程序的主入口
 do_install(){
