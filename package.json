@@ -1,0 +1,21 @@
+{
+  "name": "zstools",
+  "version": "1.0.0",
+  "description": "这是一个用于安装Java、node、android、gradle等开发环境的工具，主要用于统一团队的开发环境",
+  "main": "zstools",
+  "bin": {
+    "zstools": "zstools"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zhaoshuoer/zs-tools.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "烁儿",
+  "license": "ISC",
+  "dependencies": {
+  }
+}
